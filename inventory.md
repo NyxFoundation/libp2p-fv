@@ -5,9 +5,11 @@
 All obligations are **proposed**, not proved or model-checked. The original 61
 candidates are tracked as **53 active parent families and 8 excluded families**.
 Active parents have 160 child obligations in the four linked documents. Excluded
-IDs retain traceability, not coverage. Tools and an implementation remain undecided.
-A selected deployment profile and complete per-topic/fork instantiation are
-required before any result; these parameterized obligations are not that result.
+IDs retain traceability, not coverage. The
+[tool selection](docs/verification-tool-selection.md) covers the libp2p-related
+subset; no implementation has been selected. A selected deployment profile and
+complete per-topic/fork instantiation are required before any result; these
+parameterized obligations are not that result.
 
 ## Scope
 
