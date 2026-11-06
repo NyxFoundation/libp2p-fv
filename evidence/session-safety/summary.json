@@ -1,0 +1,223 @@
+{
+  "status": "passed",
+  "startedAt": "2026-11-06T07:39:09.749Z",
+  "evidenceClass": "finite-state-model-checking",
+  "profile": "abstract-session-v1",
+  "specificationSnapshot": "libp2p/specs@c750236de43cd8b246a824b377dfdb26bae686db",
+  "obligations": [
+    "R-03.01",
+    "R-04.01"
+  ],
+  "source": {
+    "head": "1f25f348524db6556c7e1fd942f37a4ad5ea4f5d",
+    "branch": "feat/session-safety-model",
+    "dirty": true,
+    "sha256": {
+      ".github/workflows/session-safety.yml": "22b48080a0caaceb9f9c55cca48a2ee3e027ff2c251a64758ec840fd02db7921",
+      "docs/session-safety.md": "c75617cdf6b3713a15b8985e311b4f285607264f734086ec1a2219f8a67f3b0b",
+      "models/session-safety/instances.qnt": "72b285d8c195faa9a1a15fe7696d2fefa0f43d0668814e324187a4ea6926914f",
+      "models/session-safety/lifecycle.qnt": "cbe7ac7db50f918d1146cdc04f9b66b1bb87f85f58eba2c907c219c03890b1a9",
+      "models/session-safety/scenarios.qnt": "8ca85959516b86689fde67e3f674f08ffcdf78552a967a8bbb4c94d6320b3f8c",
+      "models/session-safety/tlc.json": "24e2fd521e57dea8776c82f53b0dbfd76aaddcb573661363e8b37c261be09bd3",
+      "package-lock.json": "34005676100923d13cdbab7db8dfe676ee6470709ac416a60fc9f87af82d74e9",
+      "package.json": "ad00566eb1db2f8a3070cbfe98d844732150bf2c2bea03282f804faeff396899",
+      "scripts/prepare-apalache.mjs": "26ee253bb64ef558deedb15b1d8f1b443c364adcfb5dbfa3d0a4ce8867e416f2",
+      "scripts/publish-session-evidence.mjs": "c7fc328abbc14a564e8144e571d410dff5abf96be67f270408f39daca03aa5f8",
+      "scripts/run-command.mjs": "85b921498b8c27476e5c05be6ffb5d81079daeed39dab54c2e484eab1904a718",
+      "scripts/verification-results.mjs": "dc398d0ad56bcde88bc62476ab914d248d7b970fe14fe9ceeeb031504d6dbf80",
+      "scripts/verify-session-safety.mjs": "4ef36ec3d75cd6b534d5048dceb4c7e76b3105ce8fc05e94e0c9365c5f620dea",
+      "tests/evidence.test.mjs": "fc738023e5d482ce0d674f505f865db5ee4936633aa464fcf9a53208f4f55563",
+      "tests/preflight.test.mjs": "ef44df1a0a58fc5d2cd4bb9a901910cf854e589fd32fb0296496ac6c8802f946",
+      "tests/verification.test.mjs": "52f02847c44341636b982334ecba33920903ad22c5f0b111afaf19a9a345d3ab"
+    }
+  },
+  "results": [
+    {
+      "name": "typecheck-instances",
+      "command": [
+        "quint",
+        "typecheck",
+        "models/session-safety/instances.qnt"
+      ],
+      "durationMs": 961,
+      "status": "passed"
+    },
+    {
+      "name": "typecheck-scenarios",
+      "command": [
+        "quint",
+        "typecheck",
+        "models/session-safety/scenarios.qnt"
+      ],
+      "durationMs": 1166,
+      "status": "passed"
+    },
+    {
+      "name": "scenarios",
+      "command": [
+        "quint",
+        "test",
+        "models/session-safety/scenarios.qnt",
+        "--backend=typescript",
+        "--seed=1",
+        "--max-samples=1"
+      ],
+      "durationMs": 1212,
+      "status": "passed",
+      "tests": 20
+    },
+    {
+      "name": "single",
+      "command": [
+        "quint",
+        "verify",
+        "models/session-safety/instances.qnt",
+        "--main=single",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--server-endpoint=localhost:36279",
+        "--invariant=safety",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 6801,
+      "status": "complete",
+      "generated": 261,
+      "distinct": 91,
+      "depth": 8,
+      "expected": "complete"
+    },
+    {
+      "name": "reconnect",
+      "command": [
+        "quint",
+        "verify",
+        "models/session-safety/instances.qnt",
+        "--main=reconnect",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--server-endpoint=localhost:41065",
+        "--invariant=safety",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 7910,
+      "status": "complete",
+      "generated": 167279,
+      "distinct": 36666,
+      "depth": 15,
+      "expected": "complete"
+    },
+    {
+      "name": "peers",
+      "command": [
+        "quint",
+        "verify",
+        "models/session-safety/instances.qnt",
+        "--main=peers",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--server-endpoint=localhost:33455",
+        "--invariant=safety",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 10584,
+      "status": "complete",
+      "generated": 751294,
+      "distinct": 153785,
+      "depth": 15,
+      "expected": "complete"
+    },
+    {
+      "name": "generations",
+      "command": [
+        "quint",
+        "verify",
+        "models/session-safety/instances.qnt",
+        "--main=generations",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--server-endpoint=localhost:37985",
+        "--invariant=safety",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 53442,
+      "status": "complete",
+      "generated": 8991118,
+      "distinct": 1649055,
+      "depth": 17,
+      "expected": "complete"
+    },
+    {
+      "name": "concurrent",
+      "command": [
+        "quint",
+        "verify",
+        "models/session-safety/instances.qnt",
+        "--main=concurrent",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--server-endpoint=localhost:35933",
+        "--invariant=safety",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 93077,
+      "status": "complete",
+      "generated": 16105635,
+      "distinct": 2773940,
+      "depth": 19,
+      "expected": "complete"
+    },
+    {
+      "name": "missingCancellationGuard",
+      "command": [
+        "quint",
+        "verify",
+        "models/session-safety/instances.qnt",
+        "--main=missingCancellationGuard",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--server-endpoint=localhost:36987",
+        "--invariant=cancellationSafe",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 6665,
+      "status": "counterexample",
+      "traceStates": 7,
+      "expected": "counterexample"
+    },
+    {
+      "name": "missingGenerationGuard",
+      "command": [
+        "quint",
+        "verify",
+        "models/session-safety/instances.qnt",
+        "--main=missingGenerationGuard",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--server-endpoint=localhost:45043",
+        "--invariant=generationSafe",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 6847,
+      "status": "counterexample",
+      "traceStates": 9,
+      "expected": "counterexample"
+    }
+  ],
+  "tools": {
+    "node": "v24.21.0",
+    "quint": "0.33.1",
+    "apalache": "0.62.4",
+    "jarSha256": "e5223915507b65cc5f1638bd037ede60f8a4fc1644aff46355779f9b05df9262",
+    "launcherSha256": "f8d4643705369d0642d9345a479e7cc8b7929710dc966e7f9a374bf03e526fe4",
+    "translatorJvmArgs": "-Xmx1G -XX:+UseG1GC",
+    "java": "openjdk version \"25.0.5\" 2026-10-20\nOpenJDK Runtime Environment (build 25.0.5+8-1-Debian)\nOpenJDK 64-Bit Server VM (build 25.0.5+8-1-Debian, mixed mode, sharing)"
+  },
+  "finishedAt": "2026-11-06T07:42:23.754Z"
+}

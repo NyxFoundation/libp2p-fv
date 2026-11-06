@@ -2,15 +2,20 @@
 
 ## Evidence status
 
-All obligations are **proposed**, not proved or model-checked. The original 61
-candidates are tracked as **53 active parent families and 8 excluded families**.
+R-03.01 and R-04.01 have [finite-model Quint/TLC evidence](docs/session-safety.md)
+for the selected abstract lifecycle profile. All other obligations remain
+**proposed**, not proved or model-checked. No unbounded or implementation proof
+is claimed. A parent family is not established by checking only some children.
+The original 61 candidates are tracked as **53 active parent families and
+8 excluded families**.
 Active parents have 160 child obligations in the four linked documents. Excluded
 IDs retain traceability, not coverage. The
 [tool selection](docs/verification-tool-selection.md) proposes approaches for
-the libp2p-related subset; no obligation is thereby established and no
-implementation has been selected. A selected deployment profile and
-complete per-topic/fork instantiation are required before any result; these
-parameterized obligations are not that result.
+the libp2p-related subset; tool selection alone establishes no obligation, and no
+implementation has been selected. Beyond the documented abstract lifecycle checks,
+a selected deployment profile and complete per-topic/fork instantiation are
+required before an Ethereum end-to-end result; these parameterized obligations
+are not that result.
 
 ## Scope
 
@@ -181,4 +186,5 @@ Child rows reference their exact sections.
 Floodsub refinement, and QUIC/Ivy modeling/testing. The intended contribution is
 safety-contract decomposition and composition for the selected Ethereum path,
 not the first formal verification of libp2p. Novelty remains to establish through
-broader literature review; no proof or model-checking result is claimed.
+broader literature review. The finite lifecycle checks above do not establish
+any other child or the proposed E2E theorem.

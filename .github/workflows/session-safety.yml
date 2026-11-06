@@ -1,0 +1,39 @@
+name: Session safety
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  finite-model:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.quint/apalache-dist-0.62.4
+          key: apalache-0.62.4-e5223915507b65cc5f1638bd037ede60f8a4fc1644aff46355779f9b05df9262
+      - run: npm ci
+      - run: npm run test:coverage
+      - run: npm run verify
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: session-safety-evidence
+          path: |
+            .artifacts/session-safety/**/*.json
+            .artifacts/session-safety/**/*.log
+          include-hidden-files: true
+          if-no-files-found: error
