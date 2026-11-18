@@ -1,0 +1,155 @@
+{
+  "status": "passed",
+  "startedAt": "2026-11-18T09:35:28.131Z",
+  "profile": "abstract-negotiation-v1",
+  "evidenceClass": "finite-state-model-checking",
+  "obligations": [
+    "N-05.01",
+    "N-05.02"
+  ],
+  "specificationSnapshots": {
+    "multistreamSelect": "9a1fbe8edadebea223f47102f1913b8026c23a1c",
+    "libp2pSpecs": "c750236de43cd8b246a824b377dfdb26bae686db"
+  },
+  "source": {
+    "head": "20416b0a97f168bfecf68201e6ae7f616c7c37c4",
+    "dirty": true,
+    "sha256": {
+      "models/negotiation-safety/instances.qnt": "32114b518bbfb07c53a31dce19a757ba63f9a4d0ee9f6a5317e2ad66788c3b10",
+      "models/negotiation-safety/scenarios.qnt": "bcd8fbc24e1654c93501ee96cd5360d9781c24c6cfd839d32c7d6f0bbcec42af",
+      "models/session-safety/tlc.json": "24e2fd521e57dea8776c82f53b0dbfd76aaddcb573661363e8b37c261be09bd3",
+      "models/negotiation-safety/negotiation.qnt": "4e86dbb5b7217e7a37a60e2c4918c4877c49576f75a0324c1f393304bdbebc1e",
+      "models/session-safety/lifecycle.qnt": "cbe7ac7db50f918d1146cdc04f9b66b1bb87f85f58eba2c907c219c03890b1a9",
+      "package.json": "ad00566eb1db2f8a3070cbfe98d844732150bf2c2bea03282f804faeff396899",
+      "package-lock.json": "34005676100923d13cdbab7db8dfe676ee6470709ac416a60fc9f87af82d74e9",
+      "scripts/verify-negotiation-safety.mjs": "3fba8410f9923594c2b8b19524d8dc3fcba1d1c7d2b3280e175428e2e58d3020",
+      "scripts/run-command.mjs": "85b921498b8c27476e5c05be6ffb5d81079daeed39dab54c2e484eab1904a718",
+      "scripts/verification-results.mjs": "dc398d0ad56bcde88bc62476ab914d248d7b970fe14fe9ceeeb031504d6dbf80",
+      "scripts/prepare-apalache.mjs": "26ee253bb64ef558deedb15b1d8f1b443c364adcfb5dbfa3d0a4ce8867e416f2",
+      ".github/workflows/negotiation-safety.yml": "1b2a42e85c9818bd1df158bb0075cdef22373f808284bd1ba17f34194486caf0",
+      "tests/negotiation-runner.mjs": "5c0a0feada584ccfa42e352582016164ca7bfcd8298322b21ba925c7e6f06352"
+    }
+  },
+  "results": [
+    {
+      "name": "typecheck-instances",
+      "command": [
+        "quint",
+        "typecheck",
+        "models/negotiation-safety/instances.qnt"
+      ],
+      "durationMs": 5717,
+      "status": "passed"
+    },
+    {
+      "name": "typecheck-scenarios",
+      "command": [
+        "quint",
+        "typecheck",
+        "models/negotiation-safety/scenarios.qnt"
+      ],
+      "durationMs": 7541,
+      "status": "passed"
+    },
+    {
+      "name": "scenarios",
+      "command": [
+        "quint",
+        "test",
+        "models/negotiation-safety/scenarios.qnt",
+        "--backend=typescript",
+        "--seed=1",
+        "--max-samples=1"
+      ],
+      "durationMs": 7835,
+      "status": "passed",
+      "tests": 18
+    },
+    {
+      "name": "singleStream",
+      "command": [
+        "quint",
+        "verify",
+        "models/negotiation-safety/instances.qnt",
+        "--main=singleStream",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--invariant=safety",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 15724,
+      "status": "complete",
+      "generated": 180,
+      "distinct": 18,
+      "depth": 9
+    },
+    {
+      "name": "concurrentStreams",
+      "command": [
+        "quint",
+        "verify",
+        "models/negotiation-safety/instances.qnt",
+        "--main=concurrentStreams",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--invariant=safety",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 16816,
+      "status": "complete",
+      "generated": 2598,
+      "distinct": 130,
+      "depth": 14
+    },
+    {
+      "name": "reconnectingPeer",
+      "command": [
+        "quint",
+        "verify",
+        "models/negotiation-safety/instances.qnt",
+        "--main=reconnectingPeer",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--invariant=safety",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 13821,
+      "status": "complete",
+      "generated": 42051,
+      "distinct": 1062,
+      "depth": 17
+    },
+    {
+      "name": "independentPeers",
+      "command": [
+        "quint",
+        "verify",
+        "models/negotiation-safety/instances.qnt",
+        "--main=independentPeers",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--invariant=safety",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 14978,
+      "status": "complete",
+      "generated": 184462,
+      "distinct": 4437,
+      "depth": 17
+    }
+  ],
+  "tools": {
+    "node": "v24.21.0",
+    "quint": "0.33.1",
+    "java": "openjdk version \"25.0.5\" 2026-10-20\nOpenJDK Runtime Environment (build 25.0.5+8-1-Debian)\nOpenJDK 64-Bit Server VM (build 25.0.5+8-1-Debian, mixed mode, sharing)",
+    "apalache": "0.62.4",
+    "jarSha256": "e5223915507b65cc5f1638bd037ede60f8a4fc1644aff46355779f9b05df9262",
+    "launcherSha256": "f8d4643705369d0642d9345a479e7cc8b7929710dc966e7f9a374bf03e526fe4",
+    "translatorJvmArgs": "-Xmx1G -XX:+UseG1GC"
+  },
+  "finishedAt": "2026-11-18T09:36:52.828Z"
+}

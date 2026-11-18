@@ -1,6 +1,6 @@
 ---
 title: Transport and Authentication Properties
-last_updated: 2026-11-05
+last_updated: 2026-11-18
 tags:
   - formal-verification
   - libp2p
@@ -9,7 +9,8 @@ tags:
 ---
 # Transport and Authentication Properties
 
-[Inventory and conventions](../../inventory.md). All obligations are **proposed**.
+[Inventory and conventions](../../inventory.md). Obligations are **proposed**
+unless an evidence link notes otherwise.
 S means specification-derived, D a derived design obligation, and K a conditional
 cryptographic claim. Source references name exact sections, not proof artifacts.
 A bare parent ID in dependencies means all its applicable children. A dash means
@@ -182,6 +183,8 @@ restriction on all libp2p applications.
 
 **Negotiation failure cannot manufacture success.** Rejecting one proposal does
 not necessarily terminate negotiation: a supported alternative can still be proposed.
+Both children have [finite-model evidence](../negotiation-safety.md) under the
+abstract negotiation profile, not an implementation proof.
 
 | ID | Premise | Event | Required conclusion | Basis | Depends on |
 | --- | --- | --- | --- | --- | --- |
