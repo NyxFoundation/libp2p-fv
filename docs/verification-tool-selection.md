@@ -1,6 +1,6 @@
 ---
 title: Verification Tool Selection
-last_updated: 2026-11-06
+last_updated: 2026-11-18
 tags:
   - formal-verification
   - libp2p
@@ -91,8 +91,9 @@ not evidence that it is a normative libp2p requirement.
    and justify cross-model correspondences before using those results in a Lean
    composition claim.
 
-The first [session-authority milestone](session-safety.md) now supplies finite
-Quint/TLC checks for R-03.01 and R-04.01, twenty deterministic scenarios, and two
-mutation counterexamples. It uses Apalache only as a translator, not as a symbolic
-proof engine. The other activities above remain proposed; no unbounded proof,
-implementation correspondence, or cross-tool theorem is established.
+The [session-authority milestone](session-safety.md) supplies finite Quint/TLC
+checks for R-03.01 and R-04.01. The [negotiation milestone](negotiation-safety.md)
+adds four finite Quint/TLC checks for N-05.01 and N-05.02. Both use Apalache for
+translation, not as a symbolic proof engine. The other activities above remain
+proposed; no unbounded proof, implementation correspondence, or cross-tool
+theorem is established.

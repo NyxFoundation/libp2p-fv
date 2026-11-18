@@ -31,8 +31,10 @@ parent contracts, atomic obligations, exclusions, and four layer-specific docume
 The first [session-authority checks](docs/session-safety.md) cover R-03.01 and
 R-04.01 in five finite Quint/TLC configurations, with normal-path witnesses and
 mutation counterexamples. Reproduce with `npm ci`, `npm run test:coverage`, and
-`npm run verify` (Node.js 24 and Java 21+). These are finite-model results, not an
-unbounded or implementation proof; the remaining obligations are proposed.
+`npm run verify` (Node.js 24 and Java 21+).
+[Negotiation failure checks](docs/negotiation-safety.md) cover N-05.01 and N-05.02
+in four finite Quint/TLC configurations, including concurrent streams and a
+reconnecting peer. These results are not unbounded or implementation proofs.
 
 ## Prior work
 
