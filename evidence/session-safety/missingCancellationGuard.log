@@ -1,0 +1,132 @@
+# APALACHE version: 0.62.4 | build: 7954daf                       I@16:42:11.591
+[TLC] Running TLC model checker...
+
+TLC2 Version 2026.11.06.074215
+Warning: Please run the Java VM, which executes TLC with a throughput optimized garbage collector, by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 49 and seed -6823213976545562462 with 1 worker on 16 cores with 2048MB heap and 64MB offheap memory [pid: 788009] (Linux 7.1.5+kali-amd64 amd64, Debian 25.0.5 64bit, MSBDiskFPSet, DiskStateQueue).
+Starting... (2026-11-06 16:42:15)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-11-06 16:42:16.
+Error: Invariant q_inv is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+missingCancellationGuard_lifecycle_state = [ sessions |->
+      ( 0 :> [peer |-> 0, status |-> "unused"] @@
+        1 :> [peer |-> 0, status |-> "unused"] ),
+  current |-> (0 :> 0 @@ 1 :> 0),
+  operations |->
+      << [ session |-> 0,
+           kind |-> "none",
+           result |-> "unused",
+           cancelled |-> FALSE,
+           consumed |-> FALSE ] >>,
+  credited |-> {},
+  lastEffect |-> [session |-> 0, kind |-> "none", operation |-> 0, peer |-> 0],
+  cancelViolation |-> FALSE,
+  staleViolation |-> FALSE ]
+
+State 2: <missingCancellationGuard_lifecycle_open(1,1) line 95, col 3 to line 123, col 7 of module missingCancellationGuard>
+missingCancellationGuard_lifecycle_state = [ sessions |->
+      ( 0 :> [peer |-> 0, status |-> "unused"] @@
+        1 :> [peer |-> 1, status |-> "unauthenticated"] ),
+  current |-> (0 :> 0 @@ 1 :> 1),
+  operations |->
+      << [ session |-> 0,
+           kind |-> "none",
+           result |-> "unused",
+           cancelled |-> FALSE,
+           consumed |-> FALSE ] >>,
+  credited |-> {},
+  lastEffect |-> [session |-> 0, kind |-> "none", operation |-> 0, peer |-> 0],
+  cancelViolation |-> FALSE,
+  staleViolation |-> FALSE ]
+
+State 3: <missingCancellationGuard_lifecycle_authenticate(1) line 129, col 3 to line 160, col 7 of module missingCancellationGuard>
+missingCancellationGuard_lifecycle_state = [ sessions |->
+      ( 0 :> [peer |-> 0, status |-> "unused"] @@
+        1 :> [peer |-> 1, status |-> "authenticated"] ),
+  current |-> (0 :> 0 @@ 1 :> 1),
+  operations |->
+      << [ session |-> 0,
+           kind |-> "none",
+           result |-> "unused",
+           cancelled |-> FALSE,
+           consumed |-> FALSE ] >>,
+  credited |-> {},
+  lastEffect |-> [session |-> 0, kind |-> "none", operation |-> 0, peer |-> 0],
+  cancelViolation |-> FALSE,
+  staleViolation |-> FALSE ]
+
+State 4: <missingCancellationGuard_lifecycle_begin(1,1,"delivery") line 217, col 3 to line 242, col 7 of module missingCancellationGuard>
+missingCancellationGuard_lifecycle_state = [ sessions |->
+      ( 0 :> [peer |-> 0, status |-> "unused"] @@
+        1 :> [peer |-> 1, status |-> "authenticated"] ),
+  current |-> (0 :> 0 @@ 1 :> 1),
+  operations |->
+      << [ session |-> 1,
+           kind |-> "delivery",
+           result |-> "pending",
+           cancelled |-> FALSE,
+           consumed |-> FALSE ] >>,
+  credited |-> {},
+  lastEffect |-> [session |-> 0, kind |-> "none", operation |-> 0, peer |-> 0],
+  cancelViolation |-> FALSE,
+  staleViolation |-> FALSE ]
+
+State 5: <missingCancellationGuard_lifecycle_cancel(1) line 248, col 3 to line 285, col 7 of module missingCancellationGuard>
+missingCancellationGuard_lifecycle_state = [ sessions |->
+      ( 0 :> [peer |-> 0, status |-> "unused"] @@
+        1 :> [peer |-> 1, status |-> "authenticated"] ),
+  current |-> (0 :> 0 @@ 1 :> 1),
+  operations |->
+      << [ session |-> 1,
+           kind |-> "delivery",
+           result |-> "pending",
+           cancelled |-> TRUE,
+           consumed |-> FALSE ] >>,
+  credited |-> {},
+  lastEffect |-> [session |-> 0, kind |-> "none", operation |-> 0, peer |-> 0],
+  cancelViolation |-> FALSE,
+  staleViolation |-> FALSE ]
+
+State 6: <missingCancellationGuard_lifecycle_complete(1,"accept") line 334, col 3 to line 367, col 7 of module missingCancellationGuard>
+missingCancellationGuard_lifecycle_state = [ sessions |->
+      ( 0 :> [peer |-> 0, status |-> "unused"] @@
+        1 :> [peer |-> 1, status |-> "authenticated"] ),
+  current |-> (0 :> 0 @@ 1 :> 1),
+  operations |->
+      << [ session |-> 1,
+           kind |-> "delivery",
+           result |-> "accept",
+           cancelled |-> TRUE,
+           consumed |-> FALSE ] >>,
+  credited |-> {},
+  lastEffect |-> [session |-> 0, kind |-> "none", operation |-> 0, peer |-> 0],
+  cancelViolation |-> FALSE,
+  staleViolation |-> FALSE ]
+
+State 7: <missingCancellationGuard_lifecycle_use(1) line 441, col 3 to line 489, col 7 of module missingCancellationGuard>
+missingCancellationGuard_lifecycle_state = [ sessions |->
+      ( 0 :> [peer |-> 0, status |-> "unused"] @@
+        1 :> [peer |-> 1, status |-> "authenticated"] ),
+  current |-> (0 :> 0 @@ 1 :> 1),
+  operations |->
+      << [ session |-> 1,
+           kind |-> "delivery",
+           result |-> "accept",
+           cancelled |-> TRUE,
+           consumed |-> TRUE ] >>,
+  credited |-> {},
+  lastEffect |->
+      [session |-> 1, kind |-> "delivery", operation |-> 1, peer |-> 1],
+  cancelViolation |-> TRUE,
+  staleViolation |-> FALSE ]
+
+116 states generated, 59 distinct states found, 31 states left on queue.
+The depth of the complete state graph search is 7.
+Finished in 00s at (2026-11-06 16:42:16)
+Trace exploration spec path: /tmp/quint-tlc-02QD5f/missingCancellationGuard_TTrace_1793950935.tla
+
+[violation] Found an issue (753ms).
+error: found a counterexample

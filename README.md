@@ -28,7 +28,11 @@ completed end-to-end theorem; intended novelty requires further literature revie
 
 [**Property inventory**](inventory.md) indexes the safety-only scope, assumptions,
 parent contracts, atomic obligations, exclusions, and four layer-specific documents.
-All obligations are **proposed**, not proved or model-checked.
+The first [session-authority checks](docs/session-safety.md) cover R-03.01 and
+R-04.01 in five finite Quint/TLC configurations, with normal-path witnesses and
+mutation counterexamples. Reproduce with `npm ci`, `npm run test:coverage`, and
+`npm run verify` (Node.js 24 and Java 21+). These are finite-model results, not an
+unbounded or implementation proof; the remaining obligations are proposed.
 
 ## Prior work
 

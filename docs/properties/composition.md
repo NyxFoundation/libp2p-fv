@@ -1,6 +1,6 @@
 ---
 title: Lifecycle and End-to-End Safety Properties
-last_updated: 2026-11-05
+last_updated: 2026-11-06
 tags:
   - formal-verification
   - libp2p
@@ -9,8 +9,12 @@ tags:
 ---
 # Lifecycle and End-to-End Safety Properties
 
-[Inventory and conventions](../../inventory.md). All rows are **proposed derived
-obligations (D)**, not additional libp2p wire requirements. Sources supply component
+[Inventory and conventions](../../inventory.md). All rows are **derived
+obligations (D)**, not additional libp2p wire requirements. R-03.01 and R-04.01
+have [finite-model evidence](../session-safety.md) for an abstract lifecycle
+profile; all other rows remain proposed. No unbounded or implementation proof
+is claimed, and those checks do not establish either entire parent family.
+Sources supply component
 contracts; the cross-layer implications still require proof. `P` is the selected
 profile and `s` a local session generation. A parent dependency means all its
 applicable children. Assumptions and unverified dependencies remain explicit.

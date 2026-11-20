@@ -1,0 +1,23 @@
+# APALACHE version: 0.62.4 | build: 7954daf                       I@16:40:37.733
+[TLC] Running TLC model checker...
+
+TLC2 Version 2026.11.06.074041
+Warning: Please run the Java VM, which executes TLC with a throughput optimized garbage collector, by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 32 and seed -7173289662869537543 with 1 worker on 16 cores with 2048MB heap and 64MB offheap memory [pid: 780839] (Linux 7.1.5+kali-amd64 amd64, Debian 25.0.5 64bit, MSBDiskFPSet, DiskStateQueue).
+Starting... (2026-11-06 16:40:42)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-11-06 16:40:42.
+Progress(11) at 2026-11-06 16:40:45: 562,469 states generated (562,469 s/min), 152,653 distinct states found (152,653 ds/min), 90,980 states left on queue.
+Progress(16) at 2026-11-06 16:41:45: 12,287,356 states generated (11,724,887 s/min), 2,318,954 distinct states found (2,166,301 ds/min), 513,384 states left on queue.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.0E-6
+  based on the actual fingerprints:  val = 5.1E-7
+16105635 states generated, 2773940 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 14 and the 95th percentile is 4).
+Finished in 01min 26s at (2026-11-06 16:42:08)
+
+[ok] No violation found (87118ms).
