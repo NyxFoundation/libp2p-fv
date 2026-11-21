@@ -1,6 +1,6 @@
 ---
 title: Transport and Authentication Properties
-last_updated: 2026-11-18
+last_updated: 2026-11-21
 tags:
   - formal-verification
   - libp2p
@@ -183,6 +183,10 @@ restriction on all libp2p applications.
 
 **Negotiation failure cannot manufacture success.** Rejecting one proposal does
 not necessarily terminate negotiation: a supported alternative can still be proposed.
+The [source audit](../specification-safety-audit.md) distinguishes application-level
+termination from raw QUIC RESET_STREAM receipt: RFC 9000 section 3.2 permits
+buffered delivery with reset notification suppressed. N-05.01 requires actual
+termination without agreement, not just receipt of a transport frame.
 Both children have [finite-model evidence](../negotiation-safety.md) under the
 abstract negotiation profile, not an implementation proof.
 

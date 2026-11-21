@@ -1,0 +1,50 @@
+name: Specification safety audit
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  specification-boundary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.quint/apalache-dist-0.62.4
+          key: apalache-0.62.4-e5223915507b65cc5f1638bd037ede60f8a4fc1644aff46355779f9b05df9262
+      - run: npm ci
+      - run: npm run test:coverage
+      - run: node scripts/prepare-apalache.mjs
+      - name: Check specification boundary with no external network interfaces
+        run: |
+          sudo unshare --net -- sh -ec '
+            ip link set lo up
+            exec sudo -Hu "$SUDO_USER" -- env "PATH=$1" "JAVA_HOME=$2" node --test \
+              --experimental-test-coverage --test-coverage-include=scripts/verify-specification-safety.mjs \
+              --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 \
+              tests/specification-audit-runner.mjs
+          ' sh "$PATH" "$JAVA_HOME"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: specification-safety-evidence
+          path: |
+            .artifacts/specification-safety/**/*.json
+            .artifacts/specification-safety/**/*.log
+          include-hidden-files: true
+          if-no-files-found: error

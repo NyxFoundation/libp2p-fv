@@ -1,0 +1,21 @@
+
+  scenarios
+    ok shouldSelectBufferedEchoWhenWireResetNotificationIsSuppressedTest passed 1 test(s)
+    ok shouldNotSelectWhenResetDiscardsBufferedEchoTest passed 1 test(s)
+    ok shouldNotSuppressResetWhenReplyIsIncompleteTest passed 1 test(s)
+    ok shouldNotSelectWhenTruncatedReplyIsReadTest passed 1 test(s)
+    ok shouldDiscardBufferedReplyWhenLocalTimeoutTakesEffectTest passed 1 test(s)
+    ok shouldAllowAnotherProposalWhenFirstIsUnavailableTest passed 1 test(s)
+    ok shouldNotInstallWhenNoAgreementExistsTest passed 1 test(s)
+    ok shouldInstallWhenAgreementAndOriginRemainLiveTest passed 1 test(s)
+    ok shouldNotInstallWhenResetIsSignalledAfterAgreementTest passed 1 test(s)
+    ok shouldNotSelectWhenSessionClosesBeforeReplyReadTest passed 1 test(s)
+    ok shouldNotInstallWhenSessionClosesAfterAgreementTest passed 1 test(s)
+    ok shouldNotInstallWhenSuccessorSessionIsCurrentTest passed 1 test(s)
+    ok shouldPreserveEarlierSuccessWhenSessionLaterClosesTest passed 1 test(s)
+    ok shouldNotSelectWhenResetArrivesWithoutBufferedDataTest passed 1 test(s)
+    ok shouldNotApplyNegotiationTimeoutWhenAlreadyAgreedTest passed 1 test(s)
+    ok shouldNotReceiveNewReplyWhenWireResetAlreadyArrivedTest passed 1 test(s)
+    ok shouldNotMakePriorAgreementInvalidWhenResetArrivesLaterTest passed 1 test(s)
+
+  17 passing (33ms)

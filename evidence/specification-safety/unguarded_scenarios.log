@@ -1,0 +1,7 @@
+
+  unguarded_scenarios
+    ok shouldExposeLocalInstallationGapWhenOriginClosesTest passed 1 test(s)
+    ok shouldExposeLocalInstallationGapWhenPeerReconnectsTest passed 1 test(s)
+    ok shouldAllowNormalInstallationWhenOptionalGuardIsAbsentTest passed 1 test(s)
+
+  3 passing (15ms)

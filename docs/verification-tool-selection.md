@@ -1,6 +1,6 @@
 ---
 title: Verification Tool Selection
-last_updated: 2026-11-18
+last_updated: 2026-11-21
 tags:
   - formal-verification
   - libp2p
@@ -97,3 +97,10 @@ adds four finite Quint/TLC checks for N-05.01 and N-05.02. Both use Apalache for
 translation, not as a symbolic proof engine. The other activities above remain
 proposed; no unbounded proof, implementation correspondence, or cross-tool
 theorem is established.
+
+The [specification safety audit](specification-safety-audit.md) adds a clause-to-guard
+assessment of those four obligations and finite contrast checks. Future slices
+must distinguish specification constraints, external assumptions, and additional
+local contracts before checking safety. A counterexample counts as a specification
+finding only after its source correspondence is assessed; a guard-removal mutant
+alone is not a specification-conformance witness.

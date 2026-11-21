@@ -35,6 +35,11 @@ mutation counterexamples. Reproduce with `npm ci`, `npm run test:coverage`, and
 [Negotiation failure checks](docs/negotiation-safety.md) cover N-05.01 and N-05.02
 in four finite Quint/TLC configurations, including concurrent streams and a
 reconnecting peer. These results are not unbounded or implementation proofs.
+The [specification safety audit](docs/specification-safety-audit.md) separates
+source requirements from added local contracts. It finds that QUIC wire reset
+need not terminate negotiation, but establishes no specification contradiction
+or implementation vulnerability; guarded-model safety alone is not specification
+safety.
 
 ## Prior work
 

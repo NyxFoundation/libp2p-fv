@@ -1,0 +1,282 @@
+{
+  "status": "passed",
+  "startedAt": "2026-11-21T12:36:20.602Z",
+  "profile": "specification-boundary-v1",
+  "evidenceClass": "finite-state-model-checking",
+  "interpretation": "Contrast checks supporting a manual source audit; not a full specification conformance proof.",
+  "assessedObligations": [
+    "R-03.01",
+    "R-04.01",
+    "N-05.01",
+    "N-05.02"
+  ],
+  "specificationSnapshots": {
+    "libp2pSpecs": "c750236de43cd8b246a824b377dfdb26bae686db",
+    "multistreamSelect": "9a1fbe8edadebea223f47102f1913b8026c23a1c",
+    "quic": "RFC 9000, sections 2.4, 3.2, 3.3"
+  },
+  "source": {
+    "head": "15e2b383eceb3bf7b256026c599e14dc8bf513fa",
+    "dirty": true,
+    "sha256": {
+      "models/specification-safety/instances.qnt": "e0e4dab18b3bd1904f38b6bdd12e51994b6053cbb1607c88ad987e75b54dcdda",
+      "models/specification-safety/scenarios.qnt": "da50706dbb6d7fe7c23cc61c1f7ee9d2f4b161a3044358674b3d88a4ab903955",
+      "models/session-safety/tlc.json": "24e2fd521e57dea8776c82f53b0dbfd76aaddcb573661363e8b37c261be09bd3",
+      "models/specification-safety/reset-boundary.qnt": "0713b3938c98b867f11ec6493cd39c4e678cddb4440be393c18451bb16508c40",
+      "models/session-safety/lifecycle.qnt": "cbe7ac7db50f918d1146cdc04f9b66b1bb87f85f58eba2c907c219c03890b1a9",
+      "package.json": "ad00566eb1db2f8a3070cbfe98d844732150bf2c2bea03282f804faeff396899",
+      "package-lock.json": "34005676100923d13cdbab7db8dfe676ee6470709ac416a60fc9f87af82d74e9",
+      "scripts/verify-specification-safety.mjs": "0a4c7bdb22c76a761183972bb6a71e67bd167c92be8332d035294d7e53d38e57",
+      "scripts/run-command.mjs": "85b921498b8c27476e5c05be6ffb5d81079daeed39dab54c2e484eab1904a718",
+      "scripts/verification-results.mjs": "dc398d0ad56bcde88bc62476ab914d248d7b970fe14fe9ceeeb031504d6dbf80",
+      "scripts/prepare-apalache.mjs": "26ee253bb64ef558deedb15b1d8f1b443c364adcfb5dbfa3d0a4ce8867e416f2",
+      ".github/workflows/specification-safety.yml": "136c7a62ef804363b95be477f7955edba189f67a32d036b6d9cc07e9f5525009",
+      "tests/specification-audit-runner.mjs": "922b87893c8254c9ab9f142b5f15e49e9c90ddd93e01640f0a28f711de51896f",
+      "tests/specification-evidence.test.mjs": "2a614756fb50dbacfe77d52e9b280bb6683f78442a12afe34f36e350e2e4d3c7",
+      "docs/specification-safety-audit.md": "7af92000cbdb89800b7fd4f09fe0fc87b4106bec091f95d72228866dbc3c68f5"
+    }
+  },
+  "results": [
+    {
+      "name": "typecheck-instances",
+      "command": [
+        "quint",
+        "typecheck",
+        "models/specification-safety/instances.qnt"
+      ],
+      "durationMs": 1375,
+      "status": "passed"
+    },
+    {
+      "name": "typecheck-scenarios",
+      "command": [
+        "quint",
+        "typecheck",
+        "models/specification-safety/scenarios.qnt"
+      ],
+      "durationMs": 1257,
+      "status": "passed"
+    },
+    {
+      "name": "scenarios",
+      "command": [
+        "quint",
+        "test",
+        "models/specification-safety/scenarios.qnt",
+        "--main=scenarios",
+        "--backend=typescript",
+        "--seed=1",
+        "--max-samples=1"
+      ],
+      "durationMs": 1151,
+      "status": "passed",
+      "tests": 17
+    },
+    {
+      "name": "unguarded_scenarios",
+      "command": [
+        "quint",
+        "test",
+        "models/specification-safety/scenarios.qnt",
+        "--main=unguarded_scenarios",
+        "--backend=typescript",
+        "--seed=1",
+        "--max-samples=1"
+      ],
+      "durationMs": 1112,
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "name": "sessionProtected",
+      "command": [
+        "quint",
+        "verify",
+        "models/specification-safety/instances.qnt",
+        "--main=sessionProtected",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--invariant=safety",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 7744,
+      "status": "complete",
+      "generated": 1817,
+      "distinct": 540,
+      "depth": 10,
+      "expected": "complete",
+      "role": "conditional-design-check"
+    },
+    {
+      "name": "cancellationGap",
+      "command": [
+        "quint",
+        "verify",
+        "models/specification-safety/instances.qnt",
+        "--main=cancellationGap",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--invariant=cancellationSafe",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 7794,
+      "status": "counterexample",
+      "traceStates": 7,
+      "expected": "counterexample",
+      "role": "local-contract-probe"
+    },
+    {
+      "name": "generationGap",
+      "command": [
+        "quint",
+        "verify",
+        "models/specification-safety/instances.qnt",
+        "--main=generationGap",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--invariant=generationSafe",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 7800,
+      "status": "counterexample",
+      "traceStates": 9,
+      "expected": "counterexample",
+      "role": "local-contract-probe"
+    },
+    {
+      "name": "discardReset",
+      "command": [
+        "quint",
+        "verify",
+        "models/specification-safety/instances.qnt",
+        "--main=discardReset",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--invariant=discardSafety",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 7853,
+      "status": "complete",
+      "generated": 312,
+      "distinct": 90,
+      "depth": 11,
+      "expected": "complete",
+      "role": "conditional-design-check"
+    },
+    {
+      "name": "deliverBufferedReset",
+      "command": [
+        "quint",
+        "verify",
+        "models/specification-safety/instances.qnt",
+        "--main=deliverBufferedReset",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--invariant=safety",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 7393,
+      "status": "complete",
+      "generated": 348,
+      "distinct": 108,
+      "depth": 11,
+      "expected": "complete",
+      "role": "conditional-design-check"
+    },
+    {
+      "name": "eitherReset",
+      "command": [
+        "quint",
+        "verify",
+        "models/specification-safety/instances.qnt",
+        "--main=eitherReset",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--invariant=safety",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 7453,
+      "status": "complete",
+      "generated": 368,
+      "distinct": 108,
+      "depth": 11,
+      "expected": "complete",
+      "role": "conditional-design-check"
+    },
+    {
+      "name": "handoffBoundary",
+      "command": [
+        "quint",
+        "verify",
+        "models/specification-safety/instances.qnt",
+        "--main=unguardedHandoff",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--invariant=boundarySafety",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 7594,
+      "status": "complete",
+      "generated": 422,
+      "distinct": 128,
+      "depth": 11,
+      "expected": "complete",
+      "role": "boundary-projection-check"
+    },
+    {
+      "name": "wireResetNotCancellation",
+      "command": [
+        "quint",
+        "verify",
+        "models/specification-safety/instances.qnt",
+        "--main=eitherReset",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--invariant=wireResetStopsSelection",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 7714,
+      "status": "counterexample",
+      "traceStates": 4,
+      "expected": "counterexample",
+      "role": "overstrong-hypothesis-counterexample"
+    },
+    {
+      "name": "terminalHandoffGap",
+      "command": [
+        "quint",
+        "verify",
+        "models/specification-safety/instances.qnt",
+        "--main=unguardedHandoff",
+        "--backend=tlc",
+        "--apalache-version=0.62.4",
+        "--invariant=installationSafe",
+        "--tlc-config=models/session-safety/tlc.json",
+        "--verbosity=3"
+      ],
+      "durationMs": 7912,
+      "status": "counterexample",
+      "traceStates": 5,
+      "expected": "counterexample",
+      "role": "local-contract-probe"
+    }
+  ],
+  "tools": {
+    "node": "v24.22.2",
+    "quint": "0.33.1",
+    "java": "openjdk version \"25.0.5\" 2026-10-20\nOpenJDK Runtime Environment (build 25.0.5+8-1-Debian)\nOpenJDK 64-Bit Server VM (build 25.0.5+8-1-Debian, mixed mode, sharing)",
+    "apalache": "0.62.4",
+    "jarSha256": "e5223915507b65cc5f1638bd037ede60f8a4fc1644aff46355779f9b05df9262",
+    "launcherSha256": "f8d4643705369d0642d9345a479e7cc8b7929710dc966e7f9a374bf03e526fe4",
+    "translatorJvmArgs": "-Xmx1G -XX:+UseG1GC"
+  },
+  "finishedAt": "2026-11-21T12:37:37.373Z"
+}

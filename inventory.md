@@ -8,6 +8,10 @@ for the abstract lifecycle profile. N-05.01 and N-05.02 have
 negotiation profile. Other obligations remain **proposed**, not proved or
 model-checked. No unbounded or implementation proof is claimed. A parent family
 is not established by checking only some children.
+The [specification audit](docs/specification-safety-audit.md) reassesses these four
+D obligations against their source clauses. It distinguishes conditional model
+results, local-contract gaps, and a counterexample to equating QUIC wire reset
+with application termination; it establishes no normative specification defect.
 The original 61 candidates are tracked as **53 active parent families and
 8 excluded families**.
 Active parents have 160 child obligations in the four linked documents. Excluded
