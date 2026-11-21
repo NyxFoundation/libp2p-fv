@@ -2,15 +2,20 @@
 
 ## Status and workflow
 
-- This is a research proposal and safety-obligation inventory, not a verified
-  implementation. All obligations are currently proposed, not proved or checked.
-- No tracked implementation, formal models, dependency manifests, CI workflows,
-  or build/test/lint commands exist. Tool selection is a proposal, not a runnable
-  workflow; untracked dependencies and checker output do not establish one.
+- This contains a safety-obligation inventory and Veil reference models, not a
+  verified production implementation or completed inventory-wide proof.
+- `python3 scripts/verify.py` builds and reruns checks, policy tests, mutation
+  controls and an axiom audit. `lakefile.lean`, `lean-toolchain` and
+  `lake-manifest.json` pin the toolchain. Do not treat solver success or a cached
+  dependency alone as proof. `Tests/Axioms.lean` must pass.
+- `verification/coverage.json` lists all 160 children. `kernel-model` means a
+  model projection, not discharge of the original row's full dependencies.
+  Preserve unmodeled/test-only entries and explicit external contracts.
 - `inventory.md` covers Ethereum GossipSub over QUIC through Snappy/SSZ and gossip
-  validation. `docs/verification-tool-selection.md` is narrower: its proposed
-  tooling covers the libp2p subset, excluding Ethereum-specific rules, Snappy/SSZ,
-  and verification of a particular implementation.
+  validation. `docs/verification-tool-selection.md` is narrower: its
+  tooling targets the libp2p subset, excluding Ethereum-specific rules, Snappy/SSZ,
+  and verification of a particular implementation. Read `docs/veil-profile.md`
+  before interpreting a model theorem.
 
 ## Editing obligations
 
@@ -39,9 +44,9 @@
 - Forwarding Peer ID, object signer, and original publisher are distinct.
   StrictNoSign omits envelope signatures, not required object signatures;
   gossip ACCEPT does not establish full consensus validity.
-- Distinguish simulation, finite TLC exploration, bounded/inductive Apalache
-  results, symbolic Tamarin analysis, inherited assumptions, and Lean proofs.
-  Record revisions, profile, bounds, assumptions, and incomplete checks. Cross-tool
+- Distinguish finite Veil exploration, symbolic trace witnesses, kernel-checked
+  induction/reachability proofs, policy tests, and external assumptions.
+  Record revisions, profile, bounds, assumptions, and incomplete checks. Cross-model
   composition and implementation claims need explicit event/refinement mappings;
   shared obligation names or source citations are not proof.
 

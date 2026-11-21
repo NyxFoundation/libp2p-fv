@@ -1,6 +1,57 @@
 # libp2p-fv
 
-## Abstract
+Veil/Lean reference safety models for a libp2p GossipSub v1.3 receiver.
+**This is not a completed verification of the entire libp2p inventory.**
+The models have explicit authentication, parser, validation, timer and score
+interfaces; they are not verified production implementations.
+
+## Run the verification
+
+Prerequisites: [Elan](https://github.com/leanprover/elan), Python 3.10+,
+Git, and the [Veil system dependencies](https://github.com/verse-lab/veil/tree/578ec0b77a0936cb502e15bdb468047211abd6b9#build)
+(Clang/LLD and libc++ development libraries on Linux).
+The checked-in toolchain selects Lean 4.35.0. First use downloads and builds
+the pinned dependencies; network access is required.
+
+```sh
+python3 scripts/verify.py
+```
+
+The command builds the project, reruns finite model checks and certification,
+tests policy boundaries, audits every project theorem's axioms, and runs
+negative controls that remove validation, live-session and deduplication guards.
+It also checks that the audit rejects an added axiom, `sorry`, and a
+`native_decide` compiler oracle.
+Logs go to ignored `verification-output/`. A command failure, missing
+certificate, or nonstandard proof axiom fails the gate. GitHub Actions uploads
+these logs as `veil-verification-logs`, including when verification fails.
+
+```sh
+python3 scripts/check_coverage.py
+python3 scripts/check_coverage.py --require-complete
+```
+
+The second command intentionally fails while unmodeled or test-only obligations
+remain. Passing that bookkeeping check would still require reviewing the
+model-to-specification mappings. A successful artifact verification is **not**
+a claim that all 160 inventory obligations are discharged.
+
+## Artifacts
+
+| Path | Purpose |
+| --- | --- |
+| `Libp2p/Pipeline.lean` | Session/stream authentication gates, per-task verdict ownership, cancellation, delivery/forwarding and scoped deduplication |
+| `Libp2p/Routing.lean` | Abstract membership, explicit peers, local/remote forwarding and PX gates |
+| `Libp2p/Cache.lean` | Cache identity, IHAVE/IWANT and tracked-promise attribution |
+| `Libp2p/Policies.lean` | Check conjunctions, encoding-boundary lemmas and exact-integer reference policy functions |
+| `Libp2p/PipelineSafety.lean` | Unbounded reachability proof over Pipeline's generated transition system |
+| `Libp2p/Proof.lean` | Typed bridge from Veil WP proofs to its relational semantics; used by Pipeline's reachability proof |
+| `Tests/` | Axiom audit, policy boundary tests and coverage-ledger checks |
+| [Profile](docs/veil-profile.md) | Fixed source, feature choices, ownership and external contracts |
+| [Coverage ledger](verification/coverage.json) | All 160 child IDs, model projections, assumptions, omissions and exclusions |
+| [Tool decision](docs/verification-tool-selection.md) | Veil adoption and evidence-class distinctions |
+
+## Research context
 
 Ethereum consensus clients rely on GossipSub to disseminate consensus objects,
 but safe reception depends on the composition of transport authentication,
@@ -21,14 +72,18 @@ conditional cryptographic claims. Availability, dissemination guarantees, DoS
 resistance, global memory/CPU bounds, Req/Resp, discovery internals, TCP fallback,
 full block validation, fork choice, and execution validity are excluded. Local
 input-bound checks, required object signatures/proofs, and stale-session safety
-remain in scope. This is a research proposal, not a verified implementation or a
-completed end-to-end theorem; intended novelty requires further literature review.
+remain in the research scope. The Veil artifacts cover a narrower libp2p
+reference profile, not this entire Ethereum path or a production implementation.
+Intended novelty requires further literature review.
 
 ## Research artifact
 
 [**Property inventory**](inventory.md) indexes the safety-only scope, assumptions,
 parent contracts, atomic obligations, exclusions, and four layer-specific documents.
-All obligations are **proposed**, not proved or model-checked.
+The inventory's original obligations are not collectively discharged. The
+coverage ledger distinguishes model-level evidence from external contracts,
+unmodeled requirements, tested policies and exclusions. In particular, the
+libp2p-scoped Pipeline theorem is not the original Ethereum E2E theorem.
 
 ## Prior work
 
