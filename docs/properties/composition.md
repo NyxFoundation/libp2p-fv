@@ -1,6 +1,6 @@
 ---
 title: Lifecycle and End-to-End Safety Properties
-last_updated: 2026-11-06
+last_updated: 2026-11-21
 tags:
   - formal-verification
   - libp2p
@@ -14,6 +14,10 @@ obligations (D)**, not additional libp2p wire requirements. R-03.01 and R-04.01
 have [finite-model evidence](../session-safety.md) for an abstract lifecycle
 profile; all other rows remain proposed. No unbounded or implementation proof
 is claimed, and those checks do not establish either entire parent family.
+The [source audit](../specification-safety-audit.md) finds that the cited lifecycle
+interface does not define the cancellation/atomic-effect and callback-ownership
+contracts used by these models. Guard-removal traces are not automatically
+specification-conforming counterexamples.
 Sources supply component
 contracts; the cross-layer implications still require proof. `P` is the selected
 profile and `s` a local session generation. A parent dependency means all its

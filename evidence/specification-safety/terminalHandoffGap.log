@@ -1,0 +1,111 @@
+[TLC] Compiling to TLA+ (via Apalache)...
+# Usage statistics is OFF. We care about your privacy.
+# If you want to help our project, consider enabling statistics with config --enable-stats=true.
+
+Output directory: <REPO>/_apalache-out/server/2026-11-21T21-37-31_17317269929221932178
+# APALACHE version: 0.62.4 | build: 7954daf                       I@21:37:31.756
+Starting checker server on port 8822...                           I@21:37:31.763
+The Apalache server is running on port 8822. Press Ctrl-C to stop.
+Failed to find a usable hardware address from the network interfaces; using random bytes: b5:5d:e4:1c:59:0d:8c:72 W@21:37:32.808
+Nov 21, 2026 9:37:34 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+WARNING: Vulnerable protobuf generated type in use: io.grpc.reflection.v1alpha.ServerReflectionRequest
+As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
+PASS #0: SanyParser                                               I@21:37:34.939
+[TLC] Running TLC model checker...
+
+TLC2 Version 2026.11.21.123736
+Warning: Please run the Java VM, which executes TLC with a throughput optimized garbage collector, by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 126 and seed -8773175047631433672 with 1 worker on 16 cores with 2048MB heap and 64MB offheap memory [pid: 3375516] (Linux 7.2.15+kali-amd64 amd64, Debian 25.0.5 64bit, MSBDiskFPSet, DiskStateQueue).
+Starting... (2026-11-21 21:37:36)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-11-21 21:37:37.
+Error: Invariant q_inv is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+unguardedHandoff_reset_boundary_state = [ current |-> 1,
+  reconnected |-> FALSE,
+  attempt |-> 1,
+  offered |-> TRUE,
+  replied |-> FALSE,
+  buffer |-> [Empty |-> [tag |-> "UNIT"]],
+  resetReceived |-> FALSE,
+  terminal |-> FALSE,
+  endedWithoutAgreement |-> FALSE,
+  selected |-> FALSE,
+  selectionWitness |-> FALSE,
+  installed |-> FALSE,
+  resetSelectionViolation |-> FALSE,
+  installationViolation |-> FALSE ]
+
+State 2: <unguardedHandoff_reset_boundary_bufferReply([MatchingEcho |-> [tag |-> "UNIT"]]) line 68, col 3 to line 79, col 7 of module unguardedHandoff>
+unguardedHandoff_reset_boundary_state = [ current |-> 1,
+  reconnected |-> FALSE,
+  attempt |-> 1,
+  offered |-> TRUE,
+  replied |-> TRUE,
+  buffer |-> [MatchingEcho |-> [tag |-> "UNIT"]],
+  resetReceived |-> FALSE,
+  terminal |-> FALSE,
+  endedWithoutAgreement |-> FALSE,
+  selected |-> FALSE,
+  selectionWitness |-> FALSE,
+  installed |-> FALSE,
+  resetSelectionViolation |-> FALSE,
+  installationViolation |-> FALSE ]
+
+State 3: <unguardedHandoff_reset_boundary_readReply line 99, col 3 to line 136, col 7 of module unguardedHandoff>
+unguardedHandoff_reset_boundary_state = [ current |-> 1,
+  reconnected |-> FALSE,
+  attempt |-> 1,
+  offered |-> FALSE,
+  replied |-> TRUE,
+  buffer |-> [Empty |-> [tag |-> "UNIT"]],
+  resetReceived |-> FALSE,
+  terminal |-> FALSE,
+  endedWithoutAgreement |-> FALSE,
+  selected |-> TRUE,
+  selectionWitness |-> TRUE,
+  installed |-> FALSE,
+  resetSelectionViolation |-> FALSE,
+  installationViolation |-> FALSE ]
+
+State 4: <unguardedHandoff_reset_boundary_wireReset(FALSE) line 185, col 3 to line 209, col 7 of module unguardedHandoff>
+unguardedHandoff_reset_boundary_state = [ current |-> 1,
+  reconnected |-> FALSE,
+  attempt |-> 1,
+  offered |-> FALSE,
+  replied |-> TRUE,
+  buffer |-> [Empty |-> [tag |-> "UNIT"]],
+  resetReceived |-> TRUE,
+  terminal |-> TRUE,
+  endedWithoutAgreement |-> FALSE,
+  selected |-> TRUE,
+  selectionWitness |-> TRUE,
+  installed |-> FALSE,
+  resetSelectionViolation |-> FALSE,
+  installationViolation |-> FALSE ]
+
+State 5: <:= line 277, col 3 to line 289, col 7 of module unguardedHandoff>
+unguardedHandoff_reset_boundary_state = [ current |-> 1,
+  reconnected |-> FALSE,
+  attempt |-> 1,
+  offered |-> FALSE,
+  replied |-> TRUE,
+  buffer |-> [Empty |-> [tag |-> "UNIT"]],
+  resetReceived |-> TRUE,
+  terminal |-> TRUE,
+  endedWithoutAgreement |-> FALSE,
+  selected |-> TRUE,
+  selectionWitness |-> TRUE,
+  installed |-> TRUE,
+  resetSelectionViolation |-> FALSE,
+  installationViolation |-> TRUE ]
+
+83 states generated, 29 distinct states found, 11 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 00s at (2026-11-21 21:37:37)
+Trace exploration spec path: /tmp/quint-tlc-P64Brm/unguardedHandoff_TTrace_1795264656.tla
+
+[violation] Found an issue (901ms).
+error: found a counterexample

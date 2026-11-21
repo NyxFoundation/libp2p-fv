@@ -1,0 +1,95 @@
+[TLC] Compiling to TLA+ (via Apalache)...
+# Usage statistics is OFF. We care about your privacy.
+# If you want to help our project, consider enabling statistics with config --enable-stats=true.
+
+Output directory: <REPO>/_apalache-out/server/2026-11-21T21-37-23_17725877957067996664
+# APALACHE version: 0.62.4 | build: 7954daf                       I@21:37:23.780
+Starting checker server on port 8822...                           I@21:37:23.785
+The Apalache server is running on port 8822. Press Ctrl-C to stop.
+Failed to find a usable hardware address from the network interfaces; using random bytes: 01:b2:86:c1:05:01:d2:da W@21:37:24.787
+Nov 21, 2026 9:37:26 PM com.google.protobuf.GeneratedMessage warnPre22Gencode
+WARNING: Vulnerable protobuf generated type in use: io.grpc.reflection.v1alpha.ServerReflectionRequest
+As of 2022/09/29 (release 21.7) makeExtensionsImmutable should not be called from protobuf gencode. If you are seeing this message, your gencode is vulnerable to a denial of service attack. You should regenerate your code using protobuf 25.6 or later. Use the latest version that meets your needs. However, if you understand the risks and wish to continue with vulnerable gencode, you can set the system property `-Dcom.google.protobuf.use_unsafe_pre22_gencode` on the command line to silence this warning. You also can set `-Dcom.google.protobuf.error_on_unsafe_pre22_gencode` to throw an error instead. See security vulnerability: https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-h4h5-3hr4-j3g2
+PASS #0: SanyParser                                               I@21:37:26.863
+[TLC] Running TLC model checker...
+
+TLC2 Version 2026.11.21.123728
+Warning: Please run the Java VM, which executes TLC with a throughput optimized garbage collector, by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 32 and seed 619598809229425885 with 1 worker on 16 cores with 2048MB heap and 64MB offheap memory [pid: 3374912] (Linux 7.2.15+kali-amd64 amd64, Debian 25.0.5 64bit, MSBDiskFPSet, DiskStateQueue).
+Starting... (2026-11-21 21:37:28)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-11-21 21:37:28.
+Error: Invariant q_inv is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+eitherReset_reset_boundary_state = [ current |-> 1,
+  reconnected |-> FALSE,
+  attempt |-> 1,
+  offered |-> TRUE,
+  replied |-> FALSE,
+  buffer |-> [Empty |-> [tag |-> "UNIT"]],
+  resetReceived |-> FALSE,
+  terminal |-> FALSE,
+  endedWithoutAgreement |-> FALSE,
+  selected |-> FALSE,
+  selectionWitness |-> FALSE,
+  installed |-> FALSE,
+  resetSelectionViolation |-> FALSE,
+  installationViolation |-> FALSE ]
+
+State 2: <eitherReset_reset_boundary_bufferReply([MatchingEcho |-> [tag |-> "UNIT"]]) line 67, col 3 to line 77, col 7 of module eitherReset>
+eitherReset_reset_boundary_state = [ current |-> 1,
+  reconnected |-> FALSE,
+  attempt |-> 1,
+  offered |-> TRUE,
+  replied |-> TRUE,
+  buffer |-> [MatchingEcho |-> [tag |-> "UNIT"]],
+  resetReceived |-> FALSE,
+  terminal |-> FALSE,
+  endedWithoutAgreement |-> FALSE,
+  selected |-> FALSE,
+  selectionWitness |-> FALSE,
+  installed |-> FALSE,
+  resetSelectionViolation |-> FALSE,
+  installationViolation |-> FALSE ]
+
+State 3: <eitherReset_reset_boundary_wireReset(TRUE) line 182, col 3 to line 206, col 7 of module eitherReset>
+eitherReset_reset_boundary_state = [ current |-> 1,
+  reconnected |-> FALSE,
+  attempt |-> 1,
+  offered |-> TRUE,
+  replied |-> TRUE,
+  buffer |-> [MatchingEcho |-> [tag |-> "UNIT"]],
+  resetReceived |-> TRUE,
+  terminal |-> FALSE,
+  endedWithoutAgreement |-> FALSE,
+  selected |-> FALSE,
+  selectionWitness |-> FALSE,
+  installed |-> FALSE,
+  resetSelectionViolation |-> FALSE,
+  installationViolation |-> FALSE ]
+
+State 4: <eitherReset_reset_boundary_readReply line 97, col 3 to line 134, col 7 of module eitherReset>
+eitherReset_reset_boundary_state = [ current |-> 1,
+  reconnected |-> FALSE,
+  attempt |-> 1,
+  offered |-> FALSE,
+  replied |-> TRUE,
+  buffer |-> [Empty |-> [tag |-> "UNIT"]],
+  resetReceived |-> TRUE,
+  terminal |-> FALSE,
+  endedWithoutAgreement |-> FALSE,
+  selected |-> TRUE,
+  selectionWitness |-> TRUE,
+  installed |-> FALSE,
+  resetSelectionViolation |-> TRUE,
+  installationViolation |-> FALSE ]
+
+51 states generated, 21 distinct states found, 10 states left on queue.
+The depth of the complete state graph search is 4.
+Finished in 00s at (2026-11-21 21:37:28)
+Trace exploration spec path: /tmp/quint-tlc-vDp5hQ/eitherReset_TTrace_1795264648.tla
+
+[violation] Found an issue (900ms).
+error: found a counterexample

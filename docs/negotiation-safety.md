@@ -1,6 +1,6 @@
 ---
 title: Negotiation Failure Safety Checks
-last_updated: 2026-11-18
+last_updated: 2026-11-21
 tags:
   - formal-verification
   - libp2p
@@ -12,6 +12,13 @@ tags:
 `abstract-negotiation-v1` satisfies the two [N-05](properties/transport-and-authentication.md#n-05)
 monitors in four finite Quint/TLC instances. These are derived design
 obligations, not new multistream-select wire requirements.
+The [specification audit](specification-safety-audit.md) checks which conditions
+come from the sources rather than added local contracts. In this model, `Reset`
+means an application-visible terminating outcome, not every received QUIC
+RESET_STREAM frame. RFC 9000 section 3.2 also permits delivering fully buffered
+data while suppressing the reset notification; the audit models that alternative.
+The original model and evidence below are preserved as the terminating-policy
+profile, not promoted to a proof of all permitted transport behaviors.
 
 ## Model and contracts
 
