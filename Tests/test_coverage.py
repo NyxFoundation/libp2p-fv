@@ -18,7 +18,8 @@ class CoverageTests(unittest.TestCase):
     def test_should_cover_every_child_when_ledger_is_current(self):
         counts = GATE.validate_ledger(self.data)
         self.assertEqual(sum(counts.values()), 160)
-        self.assertGreater(counts["unmodeled"], 0)
+        self.assertEqual(counts["unmodeled"], 0)
+        self.assertEqual(counts["tested-policy"], 0)
 
     def test_should_reject_missing_obligation_when_row_is_removed(self):
         self.data["obligations"].pop()

@@ -10,6 +10,8 @@ with fresh session/stream/task tokens. Parser and validator results are external
 contracts; an ACCEPT says nothing about consensus validity or publisher identity. -/
 veil module Libp2p.Pipeline
 
+set_option maxRecDepth 4096
+
 type session
 type peer
 type stream
@@ -17,12 +19,17 @@ type task
 type object
 type context
 type messageId
+type protocolId
 
 enum Verdict = {accept, ignore, reject}
 
 immutable function expected : session → peer
+immutable function certificatePeer : session → peer
+immutable relation certificateChecks : session → Bool
+immutable individual supportedProtocol : protocolId
 immutable function owner : stream → session
 immutable relation inbound : stream → Bool
+immutable relation supportsExtensions : stream → Bool
 immutable function source : task → stream
 immutable function payload : task → object
 immutable function scope : task → context
@@ -35,10 +42,14 @@ function identity : session → peer
 relation failed : session → Bool
 relation opened : stream → Bool
 relation negotiated : stream → Bool
+function lastProposal : stream → protocolId
+relation proposalComplete : stream → Bool
+relation replyNa : stream → Bool
 relation reset : stream → Bool
 relation dispatched : stream → Bool
+function handlerProtocol : stream → protocolId
 relation written : stream → Bool
-relation extensionsSent : stream → Bool
+function extensionCount : stream → Nat
 relation submitted : task → Bool
 relation parseFailed : task → Bool
 relation pending : task → Bool
@@ -69,10 +80,14 @@ after_init {
   failed S := false
   opened I := false
   negotiated I := false
+  lastProposal I := supportedProtocol
+  proposalComplete I := false
+  replyNa I := false
   reset I := false
   dispatched I := false
+  handlerProtocol I := supportedProtocol
   written I := false
-  extensionsSent I := false
+  extensionCount I := 0
   submitted J := false
   parseFailed J := false
   pending J := false
@@ -98,11 +113,11 @@ action connect (s : session) {
   emitted := false
 }
 
-action authenticate (s : session) (p : peer) (checksPassed : Bool) {
+action authenticate (s : session) {
   require live s ∧ ¬ authenticated s
-  if checksPassed ∧ p = expected s then
+  if certificateChecks s ∧ certificatePeer s = expected s then
     authenticated s := true
-    identity s := p
+    identity s := certificatePeer s
   else
     live s := false
     failed s := true
@@ -121,9 +136,12 @@ action openStream (i : stream) {
 }
 
 -- This profile selects exact v1.3 matching, not a universal libp2p restriction.
-action propose (i : stream) (exactV13 complete : Bool) {
+action propose (i : stream) (candidate : protocolId) (complete : Bool) {
   require live (owner i) ∧ opened i ∧ ¬ reset i ∧ ¬ negotiated i
-  if exactV13 ∧ complete then
+  lastProposal i := candidate
+  proposalComplete i := complete
+  replyNa i := complete && decide (candidate ≠ supportedProtocol)
+  if candidate = supportedProtocol ∧ complete then
     negotiated i := true
   emitted := false
 }
@@ -137,16 +155,17 @@ action dispatch (i : stream) (earlyData : Bool) {
   require live (owner i) ∧ ¬ reset i ∧ inbound i ∧ ¬ earlyData
   require negotiated i
   dispatched i := true
+  handlerProtocol i := lastProposal i
   emitted := false
 }
 
 action writeEnvelope (i : stream) (extensionsAttached : Bool) {
   require live (owner i) ∧ ¬ reset i ∧ ¬ inbound i ∧ negotiated i
-  if written i then
-    require ¬ extensionsAttached
-  else
+  if supportsExtensions i ∧ ¬ written i then
     require extensionsAttached
-    extensionsSent i := true
+  if extensionsAttached then
+    require extensionCount i = 0
+    extensionCount i := extensionCount i + 1
   written i := true
   emitted := false
 }
@@ -219,6 +238,12 @@ action penalize (w : task) {
   emitted := true
 }
 
+-- Local publication shares the lookup-ID suppression index, not remote validation.
+action rememberKey (k : messageId) {
+  seen k := true
+  emitted := false
+}
+
 action expire (k : messageId) {
   seen k := false
   inWindow J := inWindow J && decide (key J ≠ k)
@@ -226,10 +251,20 @@ action expire (k : messageId) {
 }
 
 safety [authenticated_identity] ∀ s, authenticated s → identity s = expected s
+safety [authenticated_checks]
+  ∀ s, authenticated s → certificateChecks s ∧ identity s = certificatePeer s
 safety [no_failed_authentication] ∀ s, failed s → ¬ authenticated s ∧ ¬ live s
 safety [dispatch_provenance]
   ∀ i, dispatched i → negotiated i ∧ authenticated (owner i) ∧ inbound i
-safety [extension_advertisement] ∀ i, written i → extensionsSent i ∧ ¬ inbound i
+safety [selection_result]
+  ∀ i, negotiated i ↔ proposalComplete i ∧ lastProposal i = supportedProtocol
+safety [explicit_na]
+  ∀ i, replyNa i ↔ proposalComplete i ∧ lastProposal i ≠ supportedProtocol
+safety [handler_protocol]
+  ∀ i, dispatched i → handlerProtocol i = lastProposal i ∧ lastProposal i = supportedProtocol
+safety [extension_advertisement]
+  ∀ i, written i → ¬ inbound i ∧ (supportsExtensions i → extensionCount i = 1)
+safety [no_extension_repeat] ∀ i, extensionCount i ≤ 1
 safety [validated_delivery] ∀ w, delivered w ∨ forwarded w → accepted w
 safety [failed_parse_cannot_succeed] ∀ w, parseFailed w → ¬ accepted w
 safety [delivery_provenance]
@@ -263,8 +298,10 @@ invariant [window_seen] ∀ w, inWindow w → seen (key w)
 
 #model_check interpreted
   { session := Fin 1, peer := Fin 1, stream := Fin 1, task := Fin 1,
-    object := Fin 1, context := Fin 1, messageId := Fin 1 }
-  { expected := fun _ => 0, owner := fun _ => 0, inbound := fun _ => true,
+    object := Fin 1, context := Fin 1, messageId := Fin 1, protocolId := Fin 2 }
+  { expected := fun _ => 0, certificatePeer := fun _ => 0, certificateChecks := fun _ => true,
+    supportedProtocol := 0, owner := fun _ => 0, inbound := fun _ => true,
+    supportsExtensions := fun _ => false,
     source := fun _ => 0, payload := fun _ => 0, scope := fun _ => 0, key := fun _ => 0 }
   (sequential := true)
 
@@ -278,6 +315,14 @@ sat trace [validated_delivery_is_reachable] {
   finishValidation
   deliver
   assert (∃ w, delivered w)
+}
+
+sat trace [unsupported_proposal_is_answered] {
+  connect
+  authenticate
+  openStream
+  propose
+  assert (∃ i, replyNa i ∧ ¬ negotiated i)
 }
 
 end Libp2p.Pipeline

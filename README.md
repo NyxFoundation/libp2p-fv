@@ -17,13 +17,14 @@ the pinned dependencies; network access is required.
 python3 scripts/verify.py
 ```
 
-The command builds the project, reruns finite model checks and certification,
-tests policy boundaries, audits every project theorem's axioms, and runs
+The command builds the project, reruns all eight component finite checks and
+reachability proofs, runs every Lean test under `Tests/` (including nested Routing
+and composed Network traces), audits imported project theorem axioms, and runs
 negative controls that remove validation, live-session and deduplication guards.
 It also checks that the audit rejects an added axiom, `sorry`, and a
 `native_decide` compiler oracle.
 Logs go to ignored `verification-output/`. A command failure, missing
-certificate, or nonstandard proof axiom fails the gate. GitHub Actions uploads
+finite-check result, or nonstandard proof axiom fails the gate. GitHub Actions uploads
 these logs as `veil-verification-logs`, including when verification fails.
 
 ```sh
@@ -31,10 +32,11 @@ python3 scripts/check_coverage.py
 python3 scripts/check_coverage.py --require-complete
 ```
 
-The second command intentionally fails while unmodeled or test-only obligations
-remain. Passing that bookkeeping check would still require reviewing the
-model-to-specification mappings. A successful artifact verification is **not**
-a claim that all 160 inventory obligations are discharged.
+The second command rejects unmodeled or test-only entries. The current ledger
+contains 91 kernel-model projections, 30 external contracts, 38 out-of-scope
+entries and one disabled feature. Passing this bookkeeping check does not prove
+the model-to-specification mappings or their dependencies. A successful artifact
+verification is **not** a claim that all 160 inventory obligations are discharged.
 
 ## Artifacts
 
@@ -43,12 +45,16 @@ a claim that all 160 inventory obligations are discharged.
 | `Libp2p/Pipeline.lean` | Session/stream authentication gates, per-task verdict ownership, cancellation, delivery/forwarding and scoped deduplication |
 | `Libp2p/Routing.lean` | Abstract membership, explicit peers, local/remote forwarding and PX gates |
 | `Libp2p/Cache.lean` | Cache identity, IHAVE/IWANT and tracked-promise attribution |
-| `Libp2p/Policies.lean` | Check conjunctions, encoding-boundary lemmas and exact-integer reference policy functions |
+| `Libp2p/Policies.lean`, `Handshake.lean`, `Interfaces.lean` | Check conjunctions, certificate-field policy, exact protocol selection and external input contracts |
+| `Libp2p/Core*.lean`, `Network*.lean` | Coupled Pipeline/Cache/Routing transitions, validation authority, session attribution, shared IDs and selection effects |
+| `Libp2p/Score*.lean`, `Selection.lean` | Exact-rational score state, retained histories, threshold refinement and peer-list selection |
+| `Libp2p/Temporal*.lean` | Backoff, limits, first-arrival credit, retention and causal-permission relations |
 | `Libp2p/PipelineSafety.lean` | Unbounded reachability proof over Pipeline's generated transition system |
 | `Libp2p/Proof.lean` | Typed bridge from Veil WP proofs to its relational semantics; used by Pipeline's reachability proof |
 | `Tests/` | Axiom audit, policy boundary tests and coverage-ledger checks |
 | [Profile](docs/veil-profile.md) | Fixed source, feature choices, ownership and external contracts |
 | [Coverage ledger](verification/coverage.json) | All 160 child IDs, model projections, assumptions, omissions and exclusions |
+| [Verification results](docs/verification-results.md) | Integration checks, review disposition and remaining composition limits |
 | [Tool decision](docs/verification-tool-selection.md) | Veil adoption and evidence-class distinctions |
 
 ## Research context

@@ -13,6 +13,16 @@ SPEC.loader.exec_module(GATE)
 
 
 class VerificationRunnerTests(unittest.TestCase):
+    def test_should_discover_all_lean_tests_when_suites_are_nested(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "Routing").mkdir()
+            expected = [root / "Axioms.lean", root / "Network.lean",
+                        root / "Routing/Reachability.lean"]
+            for path in expected + [root / "test_verify.py", root / "Network.log"]:
+                path.touch()
+            self.assertEqual(GATE.lean_test_files(root), tuple(expected))
+
     def test_should_return_log_when_command_succeeds(self):
         with tempfile.TemporaryDirectory() as directory:
             output = GATE.run("success", [sys.executable, "-c", "print('evidence')"],

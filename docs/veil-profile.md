@@ -1,6 +1,6 @@
 ---
 title: Veil Reference Profile
-last_updated: 2026-11-22
+last_updated: 2026-11-23
 tags:
   - formal-verification
   - libp2p
@@ -28,13 +28,17 @@ and RFC 9001. No claim about a later specification revision is made.
 | 0-RTT / TLS resumption | Disabled; no security result for enabled behavior |
 | QUIC migration / key updates | Transport contracts; they cannot change the application session's identity |
 | Authentication | Expected Peer ID is required in this reference profile; local mutual-auth checks, TLS 1.3 and ALPN `libp2p` |
-| Numerical reference | Unbounded integers/naturals; decay uses rational numerator/denominator with floor rounding |
+| Numerical reference | Exact rational scores/counters/decay (`Libp2p/ScoreState.lean`); floor/integer or IEEE variants are excluded |
 | PX equality | Strict `score > AcceptPXThreshold`; equality is rejected |
 | P3b trigger | Negative-score prune AND active squared deficit; an explicit choice at the source ambiguity |
+| P7 | A penalty event records the raw counter increment; the weight applies the square |
+| Score state | Exact Rat per-peer history (`ScoreConfig`/`ScoreState`); configured topics only |
+| Time | Specification relations with serial/timestamp ordering; no wall-clock algorithm |
 
-PX equality and P3b are selected interpretations, not resolutions claimed for
-every conforming implementation. Integer/floor arithmetic is a reference design
-choice. IEEE-754 correspondence and comparison tolerances are not proved.
+PX equality, P3b and the P7 event counting are selected interpretations, not
+resolutions claimed for every conforming implementation. Rational arithmetic is
+a reference design choice; IEEE-754 correspondence and comparison tolerances
+are not proved and are excluded from the reference profile.
 
 ## Ownership and observable events
 
@@ -72,21 +76,26 @@ immutable; a theorem about them does not establish real byte-buffer immutability
    `AuthChecks.accept` for this session's actual certificate and key. ASN.1,
    X.509 time interpretation, signature verification, deterministic PublicKey
    encoding and multihashes are not implemented. Unknown noncritical extensions
-   do not add a rejection predicate; sender deprecated-field omission is not
-   modeled.
+   do not add a rejection predicate. `Handshake.localCertificate` omits deprecated
+   unique-ID fields, while the receiver's MAY-reject choice is explicit;
+   correspondence of the field record to serialized ASN.1 remains external.
 3. **Decoding:** `wellFormed` must mean a complete, locally bounded, schema-valid
    RPC satisfying StrictNoSign, with the task's actual immutable coordinates.
    There is no chosen concrete outer length-prefix decoder and no byte-level
    framing proof. The inventory's F-01 boundary remains open; Req/Resp rules
    have not been imported.
-4. **Validation:** `complete` receives the validator's verdict for that exact
-   task/context. Routing's `validatedRemote/validatedLocal` and Cache's
-   `validate` are separate abstract input events, not implementations of
-   that validator.
+4. **Validation:** `finishValidation` receives the validator's verdict for that
+   exact task/context; it does not implement that validator. In the standalone
+   models, Routing's `validatedRemote/validatedLocal` and Cache's `validate` are
+   abstract inputs. Core and Network restrict those actions to transactions
+   authorized by the same Pipeline task or trusted local-publication input;
+   their `validation_binding` theorems prove that connection.
 5. **Timers and scores:** expiration events are issued at permitted profile
-   boundaries. Routing's score-class predicates are immutable snapshots.
-   No theorem connects changing scores, retained history or numerical policy
-   functions to the router transitions.
+   boundaries. Network classifies each current rational score snapshot through
+   `ScoreThresholds`; `refreshScores` accepts an externally supplied snapshot.
+   `ScoreHistory` separately connects exact numeric updates to real
+   TemporalRetention transitions. No theorem binds those histories to Network's
+   refresh inputs or binds the separate temporal components to Network events.
 
 These premises are deliberately visible. They are not discharged by giving an
 action a name such as `authenticate` or `validate`.
@@ -101,9 +110,26 @@ The mutation gate also explores two tasks with different payloads/contexts but
 one shared lookup ID. Removing each of three guards must produce a concrete
 safety counterexample; an elaboration error is not accepted as a passing mutation.
 
-The parameterized `Pipeline.pipelineSafety` and Routing/Cache `ic3_safe` theorems
-concern arbitrary inhabitants of the model's
-sorts and arbitrarily many finite transitions. They do not remove the listed
-external contracts. All proof dependencies must pass `Tests/Axioms.lean`.
-Coverage of the original 160 obligations is recorded separately, including
-unmodeled behavior and excluded Ethereum dependencies.
+The parameterized `Pipeline.pipelineSafety`, `Routing.routingSafety`,
+`Cache.cacheSafety` and `Core.coreSafety` theorems, plus the five
+`TemporalSafety` components, concern arbitrary inhabitants of the models' sorts
+and arbitrarily many finite transitions. They reuse the kernel-checked per-action
+verification conditions and Veil's WP-to-transition correspondence; the earlier
+`ic3_safe` certificates were replaced by these handwritten inductions when the
+models grew, and `#check_invariants` still runs the per-action VCs with
+`veil.smt.trust false`. All proof dependencies must pass `Tests/Axioms.lean`.
+Core and Network use labelled transactions over the actual component transition
+systems. Their reachability projections allow stuttering, and Network additionally
+binds validation authority, authenticated input/output sessions, peer selection,
+publication IDs and expiration. `Tests/Network.lean` supplies kernel-checked
+reachable traces and negative scenarios; it is not exhaustive finite exploration
+of the coupled Network system. Component finite checks do not fill that gap.
+
+TemporalKnowledge's permission relation characterizes the selected observation
+projection, not an implementable receiver detector. It and ScoreHistory remain
+separate from Network. There is no single theorem composing all these components
+or establishing implementation-wide or inventory-wide safety.
+
+Every inventory child points to a kernel-checked artifact or a recorded
+external/excluded boundary; `scripts/check_coverage.py --require-complete` is a
+bookkeeping gate, not a discharge of the listed boundary conditions.

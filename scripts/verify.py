@@ -9,7 +9,8 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-MODELS = ("Pipeline", "Routing", "Cache")
+MODELS = ("Pipeline", "Routing", "Cache", "TemporalBackoff", "TemporalLimits",
+          "TemporalCredit", "TemporalRetention", "TemporalCausality")
 
 
 def stop(process):
@@ -49,6 +50,10 @@ def run(label, command, output, timeout, expected_exit=0):
     return (output / f"{label}.log").read_text()
 
 
+def lean_test_files(root):
+    return tuple(sorted(root.rglob("*.lean")))
+
+
 def check_axiom_guard(output, timeout):
     source = (ROOT / "Tests/Axioms.lean").read_text()
     cases = [
@@ -72,7 +77,7 @@ def check_axiom_guard(output, timeout):
 def main():
     signal.signal(signal.SIGTERM, handle_termination)
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--timeout", type=int, default=1800, help="seconds per command")
+    parser.add_argument("--timeout", type=int, default=3600, help="seconds per command")
     args = parser.parse_args()
     if args.timeout <= 0:
         parser.error("--timeout must be positive")
@@ -84,11 +89,14 @@ def main():
         for model in MODELS:
             text = run(model.lower(), ["lake", "lean", f"Libp2p/{model}.lean"],
                        output, args.timeout)
-            if "No violation" not in text or (model != "Pipeline" and "Certified:" not in text):
-                raise RuntimeError(f"{model} lacks model-checking or certification evidence")
-        run("pipeline-proof", ["lake", "lean", "Libp2p/PipelineSafety.lean"], output, args.timeout)
-        run("policies", ["lake", "lean", "Tests/Policies.lean"], output, args.timeout)
-        run("axioms", ["lake", "lean", "Tests/Axioms.lean"], output, args.timeout)
+            if "No violation" not in text:
+                raise RuntimeError(f"{model} lacks model-checking evidence")
+        for proof in sorted((ROOT / "Libp2p").glob("*Safety.lean")):
+            run(f"{proof.stem.lower()}-proof", ["lake", "lean", str(proof)],
+                output, args.timeout)
+        for test in lean_test_files(ROOT / "Tests"):
+            label = test.relative_to(ROOT / "Tests").with_suffix("").as_posix().replace("/", "-")
+            run(label.lower(), ["lake", "lean", str(test)], output, args.timeout)
         check_axiom_guard(output, args.timeout)
         run("mutations", [sys.executable, "scripts/check_mutations.py"], output, args.timeout)
         run("ledger-tests", [sys.executable, "-m", "unittest", "discover", "-s", "Tests",
@@ -96,7 +104,7 @@ def main():
     except RuntimeError as error:
         print(f"FAIL: {error}", file=sys.stderr)
         return 1
-    print("PASS: model checks, certificates, policy tests, axiom audit and ledger checks.")
+    print("PASS: model checks, reachability proofs, Lean tests, axiom audit and ledger checks.")
     print("This gate verifies the artifact, not completion of every inventory obligation.")
     return 0
 

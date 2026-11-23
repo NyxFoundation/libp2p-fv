@@ -1,6 +1,6 @@
 ---
 title: Verification Tool Selection
-last_updated: 2026-11-22
+last_updated: 2026-11-23
 tags:
   - formal-verification
   - libp2p
@@ -29,7 +29,7 @@ of using that release's prebuilt artifacts.
 | `#model_check interpreted` | Exploration of the particular finite instance and theory recorded in the source. It does not enumerate all theories or establish an unbounded theorem. |
 | `sat trace` | A symbolic witness for an explicit scenario, including reachability of delivery. It is a non-vacuity check, not a safety proof. |
 | `#check_invariants` and `#gen_theorems` | Kernel-checked initialization and action-preservation verification conditions, with `veil.smt.trust false`. |
-| `#updr … certify` and `ic3_safe` | Routing/Cache reachability theorems for the Veil relational transition systems, subject to the axiom audit. Solver success alone is not sufficient. |
+| `#updr … certify` | Optional IC3 reachability certificate for a specific relational system, subject to the axiom audit. The current reference models use handwritten parameterized inductions (`pipelineSafety`, `routingSafety`, `cacheSafety`, `coreSafety`, `TemporalSafety.*`) instead; `#check_invariants` still supplies the checked per-action VCs for those proofs. |
 | `Pipeline.pipelineSafety` | Direct Lean induction using the checked per-action VCs, Veil's WP-to-transition correspondence and `invariant_of_inductive`. No second transition model is introduced. |
 | Pure Lean policy theorems | Only the stated properties of the reference functions, not correctness of a production parser, crypto library or scorer. |
 
@@ -50,18 +50,44 @@ relational transition system, not a hand-copied interpretation of the actions.
   negotiated admission, verdict ownership, cancellation, delivery and forwarding
   authorization. Its receiver-side reachability proof is in
   `Libp2p/PipelineSafety.lean`.
-- `Libp2p/Routing.lean`: abstract membership and routing gates. Validation,
-  score classes and timer expiration are input interfaces.
-- `Libp2p/Cache.lean`: cache lookup identity, IHAVE requests and tracked promises.
+- `Libp2p/Cache.lean`: cache lookup identity, bounded history buckets,
+  retransmission limits, IHAVE/IWANT correspondence, tracked promise intervals
+  with timer ticks, and deduplication. Reachability proof in `CacheSafety.lean`;
+  acceptance/seen effect lemmas in `CacheFacts.lean`.
+- `Libp2p/Routing.lean`: dynamic-score membership and forwarding with score
+  snapshots, duplicate-free capacity admission, ID-keyed suppression and
+  session-policy controls. Reachability/event proofs in `RoutingSafety.lean`;
+  the interface contract is recorded in the composition handoff.
+- `Libp2p/Core.lean`: the labelled Core product of Pipeline and Cache with
+  shared seen synchronization, task/local validation authority and expiry;
+  coupled safety in `CoreSafety.lean`, reusable transaction lemmas in
+  `CompositionSupport.lean`.
+- `Libp2p/Network*.lean`: labelled Core/Routing transactions with reachability
+  projections, shared validation authority and publication IDs, authenticated
+  session attribution, threshold classification and selection effects. Outputs
+  are observations of enabled labels, not re-emission of persistent event flags.
+- `Libp2p/Selection.lean`: checked survivor/median selection relations over
+  actual peer lists and current Rat scores with cardinality theorems.
+- `Libp2p/Score*.lean`: exact-rational score parameters, counters, updates,
+  configuration and threshold refinement.
+- `Libp2p/Temporal*.lean`: backoff extension, IDONTWANT limit counting,
+  first-arrival credit ownership, peer-wide retained history and global
+  causal order, as specification components with explicit boundaries.
 - `Libp2p/Policies.lean`: authentication check conjunction, envelope policy,
-  negotiation boundary lemmas and exact-integer reference arithmetic.
+  negotiation boundary lemmas and reference functions; certificate-field and
+  protocol-selection projections in `Handshake.lean`.
 
-These are not four interchangeable proofs of the same implementation.
-The routing and cache models have abstract validation inputs; no refinement
-theorem connects their complete reachable states to Pipeline. Their results
-must not be imported into Pipeline merely because both use the word ACCEPT.
-The [profile](veil-profile.md) identifies these interfaces and the
-[coverage ledger](../verification/coverage.json) records per-obligation limits.
+Standalone Routing and Cache still have abstract validation inputs. Core and
+Network restrict those inputs and prove projections of their actual transactions
+into the component systems, including validation-authority bindings. This does
+not imply that every standalone component execution is a composed execution.
+Network still receives arbitrary rational score snapshots: ScoreHistory and the
+causal-permission components have not been coupled into that transition system.
+There is no whole-inventory composition theorem or exhaustive finite Network
+exploration; its integration scenarios are kernel-checked traces.
+The [profile](veil-profile.md) identifies these interfaces, the
+[verification results](verification-results.md) record checks and review limits,
+and the [coverage ledger](../verification/coverage.json) records per-obligation limits.
 A `kernel-model` ledger entry points into a kernel-checked artifact; it does not
 mean that the complete original obligation has been proved.
 
