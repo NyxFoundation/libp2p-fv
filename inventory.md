@@ -2,13 +2,15 @@
 
 ## Evidence status
 
-All obligations are **proposed**, not proved or model-checked. The original 61
+The original obligations are **not collectively discharged**. Veil model-level
+evidence and its limits are recorded in the [coverage ledger](verification/coverage.json)
+and [reference profile](docs/veil-profile.md); a model projection does not prove
+all of an inventory row's premises and dependencies. The original 61
 candidates are tracked as **53 active parent families and 8 excluded families**.
 Active parents have 160 child obligations in the four linked documents. Excluded
 IDs retain traceability, not coverage. The
-[tool selection](docs/verification-tool-selection.md) proposes approaches for
-the libp2p-related subset; no obligation is thereby established and no
-implementation has been selected. A selected deployment profile and
+[tool selection](docs/verification-tool-selection.md) adopts Veil for
+the libp2p-related subset. No production implementation has been selected. A selected deployment profile and
 complete per-topic/fork instantiation are required before any result; these
 parameterized obligations are not that result.
 
